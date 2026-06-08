@@ -1,10 +1,19 @@
-# koina
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/wordmark-dark.svg">
+    <img src="assets/brand/wordmark.svg" alt="koina" width="240">
+  </picture>
+</p>
 
-*An agentic toolset.* Reusable, provider-neutral building blocks for agents on
-low-level LLM SDKs: the six core file/shell tools (Read, Write, Edit, Bash,
-Glob, Grep), a never-raising `dispatch`, structured JSONL logging, and a thin
-adapter per provider. koina gives you the tools and the dispatch; the agentic
-loop stays in your code.
+<p align="center"><em>An agentic toolset.</em></p>
+
+<p align="center">
+  Reusable, provider-neutral building blocks for agents on low-level LLM SDKs:
+  the six core file/shell tools (Read, Write, Edit, Bash, Glob, Grep), a
+  never-raising <code>dispatch</code>, structured JSONL logging, and a thin
+  adapter per provider. koina gives you the tools and the dispatch; the agentic
+  loop stays in your code.
+</p>
 
 ## Requirements
 
