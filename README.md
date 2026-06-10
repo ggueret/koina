@@ -1,9 +1,9 @@
-<p align="center">
+<h1 align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/brand/wordmark-dark.svg">
     <img src="assets/brand/wordmark.svg" alt="koina" width="240">
   </picture>
-</p>
+</h1>
 
 <p align="center"><em>An agentic toolset.</em></p>
 
