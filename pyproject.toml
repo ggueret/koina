@@ -53,11 +53,14 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+cache_dir = ".cache/pytest"
 
 [tool.ruff]
 line-length = 88
 target-version = "py312"
+cache-dir = ".cache/ruff"
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
+cache_dir = ".cache/mypy"
