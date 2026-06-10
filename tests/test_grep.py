@@ -61,3 +61,28 @@ async def test_offset_skips_results(tmp_path, ctx):
         (tmp_path / f"f{i}.py").write_text("import x\n")
     out = await Grep().run(Grep.Input(pattern="import", offset=2), ctx)
     assert len(out.filenames) == 3
+
+
+async def test_double_dash_pattern_is_literal_not_flag(tmp_path, ctx):
+    # A pattern starting with "--" must be searched literally, never parsed as a
+    # ripgrep flag. Without the "--" separator, "--pre=<program>" makes ripgrep
+    # run an arbitrary preprocessor program for every file it visits.
+    (tmp_path / "a.txt").write_text("config: --pre=/bin/sh value\n")
+    out = await Grep().run(
+        Grep.Input(pattern="--pre=/bin/sh", output_mode="content"), ctx
+    )
+    assert "--pre=/bin/sh value" in out.content
+
+
+async def test_single_dash_pattern_is_literal_not_flag(tmp_path, ctx):
+    # "-foo" must not be parsed as "-f oo" (ripgrep's read-patterns-from-file flag).
+    (tmp_path / "a.txt").write_text("a -foo b\n")
+    out = await Grep().run(Grep.Input(pattern="-foo", output_mode="content"), ctx)
+    assert "-foo" in out.content
+
+
+async def test_option_like_pattern_is_searched_not_interpreted(tmp_path, ctx):
+    # "--help" must be searched as text, not trigger ripgrep's help banner.
+    (tmp_path / "a.txt").write_text("run with --help for usage\n")
+    out = await Grep().run(Grep.Input(pattern="--help", output_mode="content"), ctx)
+    assert "run with --help for usage" in out.content

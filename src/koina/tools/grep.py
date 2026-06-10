@@ -87,7 +87,7 @@ class Grep(Tool):
         base = Path(input.path) if input.path else ctx.cwd
         if not base.is_absolute():
             base = ctx.cwd / base
-        args += [input.pattern, str(base)]
+        args += ["--", input.pattern, str(base)]
 
         _, stdout = await run_rg(args, cwd=str(ctx.cwd))
         limit = DEFAULT_HEAD_LIMIT if input.head_limit is None else input.head_limit
