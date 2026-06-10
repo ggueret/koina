@@ -1,0 +1,31 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        removed_code_behavior: removals_only
+        if_ci_failed: error
+        if_not_found: success
+    patch:
+      default:
+        target: 80%
+        if_ci_failed: error
+        if_not_found: success
+
+# Only post a PR comment when patch coverage actually drops.
+comment:
+  require_changes: true
+
+# Status check is enough; inline annotations clutter the diff.
+github_checks:
+  annotations: false
+
+codecov:
+  notify:
+    require_ci_to_pass: true
+    wait_for_ci: true
+
+ignore:
+  - "tests/**"
+  - "examples/**"
