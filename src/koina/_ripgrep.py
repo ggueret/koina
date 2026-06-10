@@ -7,6 +7,7 @@ async def run_rg(args: list[str], cwd: str) -> tuple[int, str]:
         "rg",
         *args,
         cwd=cwd,
+        stdin=asyncio.subprocess.DEVNULL,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
