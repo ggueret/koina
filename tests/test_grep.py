@@ -5,7 +5,9 @@ import pytest
 from koina.context import ToolContext
 from koina.tools.grep import Grep
 
-pytestmark = pytest.mark.skipif(shutil.which("rg") is None, reason="ripgrep not installed")
+pytestmark = pytest.mark.skipif(
+    shutil.which("rg") is None, reason="ripgrep not installed"
+)
 
 
 @pytest.fixture
@@ -41,7 +43,9 @@ async def test_count_mode(tmp_path, ctx):
 async def test_case_insensitive_alias(tmp_path, ctx):
     (tmp_path / "c.py").write_text("IMPORT this\n")
     out = await Grep().run(
-        Grep.Input.model_validate({"pattern": "import", "-i": True, "output_mode": "content"}),
+        Grep.Input.model_validate(
+            {"pattern": "import", "-i": True, "output_mode": "content"}
+        ),
         ctx,
     )
     assert "IMPORT this" in out.content

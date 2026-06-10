@@ -48,4 +48,3 @@ class Glob(Tool):
         if output.truncated:
             content += "\n(results truncated; use a more specific pattern)"
         return content
-

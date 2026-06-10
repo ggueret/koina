@@ -60,12 +60,20 @@ async def run_dimension(
         f"Diff:\n```diff\n{diff}\n```"
     )
     return await run_agent(
-        client, model, dimension_prompt(focus), initial, read_only_registry(), ToolContext(cwd=repo_root), max_turns
+        client,
+        model,
+        dimension_prompt(focus),
+        initial,
+        read_only_registry(),
+        ToolContext(cwd=repo_root),
+        max_turns,
     )
 
 
 async def synthesize(client: Any, model: str, reports: dict[str, str]) -> str:
-    sections = "\n\n".join(f"## {name} review\n{report}" for name, report in reports.items())
+    sections = "\n\n".join(
+        f"## {name} review\n{report}" for name, report in reports.items()
+    )
     resp = await client.messages.create(
         model=model,
         max_tokens=4096,
@@ -76,16 +84,25 @@ async def synthesize(client: Any, model: str, reports: dict[str, str]) -> str:
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="Multi-agent dimension code review of a git diff.")
-    parser.add_argument("base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)")
+    parser = argparse.ArgumentParser(
+        description="Multi-agent dimension code review of a git diff."
+    )
+    parser.add_argument(
+        "base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)"
+    )
     parser.add_argument("--model", default="claude-opus-4-8", help="Anthropic model id")
-    parser.add_argument("--max-turns", type=int, default=20, help="Max agent turns per dimension")
+    parser.add_argument(
+        "--max-turns", type=int, default=20, help="Max agent turns per dimension"
+    )
     args = parser.parse_args()
 
     repo_root = Path.cwd()
     diff = compute_diff(args.base, repo_root)
     if not diff.strip():
-        print(f"No changes between {args.base} and HEAD. Nothing to review.", file=sys.stderr)
+        print(
+            f"No changes between {args.base} and HEAD. Nothing to review.",
+            file=sys.stderr,
+        )
         return
     changed_files = compute_changed_files(args.base, repo_root)
 
@@ -93,10 +110,21 @@ async def main() -> None:
 
     client = AsyncAnthropic()
     names = list(DIMENSIONS)
-    print(f"Running {len(names)} dimension reviews in parallel: {', '.join(names)}", file=sys.stderr)
+    print(
+        f"Running {len(names)} dimension reviews in parallel: {', '.join(names)}",
+        file=sys.stderr,
+    )
     results = await asyncio.gather(
         *(
-            run_dimension(client, args.model, diff, changed_files, repo_root, DIMENSIONS[name], args.max_turns)
+            run_dimension(
+                client,
+                args.model,
+                diff,
+                changed_files,
+                repo_root,
+                DIMENSIONS[name],
+                args.max_turns,
+            )
             for name in names
         )
     )

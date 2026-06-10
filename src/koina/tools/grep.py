@@ -21,10 +21,18 @@ class GrepInput(BaseModel):
         default=None, description="Output mode"
     )
     after: int | None = Field(default=None, alias="-A", description="Lines after match")
-    before: int | None = Field(default=None, alias="-B", description="Lines before match")
-    context: int | None = Field(default=None, alias="-C", description="Lines around match")
-    line_numbers: bool | None = Field(default=None, alias="-n", description="Show line numbers")
-    ignore_case: bool | None = Field(default=None, alias="-i", description="Case insensitive")
+    before: int | None = Field(
+        default=None, alias="-B", description="Lines before match"
+    )
+    context: int | None = Field(
+        default=None, alias="-C", description="Lines around match"
+    )
+    line_numbers: bool | None = Field(
+        default=None, alias="-n", description="Show line numbers"
+    )
+    ignore_case: bool | None = Field(
+        default=None, alias="-i", description="Case insensitive"
+    )
     type: str | None = Field(default=None, description="File type filter")
     head_limit: int | None = Field(default=None, description="Limit results")
     offset: int | None = Field(default=None, description="Skip the first N results")
@@ -62,7 +70,11 @@ class Grep(Tool):
         elif mode == "count":
             args.append("--count")
         else:
-            args += ["--line-number" if input.line_numbers is not False else "--no-line-number"]
+            args += [
+                "--line-number"
+                if input.line_numbers is not False
+                else "--no-line-number"
+            ]
             args += ["--max-columns", str(MAX_COLUMNS)]
             if input.context is not None:
                 args += ["-C", str(input.context)]
@@ -93,4 +105,3 @@ class Grep(Tool):
 
     def render_result(self, output: GrepOutput) -> str:
         return output.content or "No matches found"
-

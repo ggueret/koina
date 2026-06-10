@@ -40,10 +40,19 @@ def bash_registry() -> ToolRegistry:
 
 
 async def main() -> None:
-    parser = argparse.ArgumentParser(description="Code review where the agent runs git via Bash.")
-    parser.add_argument("base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)")
+    parser = argparse.ArgumentParser(
+        description="Code review where the agent runs git via Bash."
+    )
+    parser.add_argument(
+        "base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)"
+    )
     parser.add_argument("--model", default="claude-opus-4-8", help="Anthropic model id")
-    parser.add_argument("--max-turns", type=int, default=20, help="Max agent turns before forcing a report")
+    parser.add_argument(
+        "--max-turns",
+        type=int,
+        default=20,
+        help="Max agent turns before forcing a report",
+    )
     args = parser.parse_args()
 
     repo_root = Path.cwd()
@@ -57,7 +66,13 @@ async def main() -> None:
 
     client = AsyncAnthropic()
     report = await run_agent(
-        client, args.model, SYSTEM_PROMPT, initial, bash_registry(), ToolContext(cwd=repo_root), args.max_turns
+        client,
+        args.model,
+        SYSTEM_PROMPT,
+        initial,
+        bash_registry(),
+        ToolContext(cwd=repo_root),
+        args.max_turns,
     )
     print(report)
 

@@ -24,7 +24,9 @@ class ReadOutput:
 
 class Read(Tool):
     name = "Read"
-    description = "Read a text file from the local filesystem. Lines are returned numbered."
+    description = (
+        "Read a text file from the local filesystem. Lines are returned numbered."
+    )
     Input = ReadInput
     is_read_only = True
     is_concurrency_safe = True
@@ -65,7 +67,11 @@ class Read(Tool):
                 truncated=truncated,
             )
 
-        end = len(lines) if input.limit is None else min(len(lines), start - 1 + input.limit)
+        end = (
+            len(lines)
+            if input.limit is None
+            else min(len(lines), start - 1 + input.limit)
+        )
         selected = lines[start - 1 : end]
         numbered = "\n".join(f"{start + i}\t{line}" for i, line in enumerate(selected))
         return ReadOutput(
@@ -80,4 +86,3 @@ class Read(Tool):
         if output.truncated:
             content += "\n(file truncated: exceeded max_bytes)"
         return content
-

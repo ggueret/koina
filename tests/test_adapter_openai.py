@@ -7,7 +7,8 @@ from koina.calls import ToolResult
 
 def _tc(id, name, arguments):
     return SimpleNamespace(
-        id=id, type="function",
+        id=id,
+        type="function",
         function=SimpleNamespace(name=name, arguments=arguments),
     )
 
@@ -35,7 +36,9 @@ def test_parse_tool_calls_empty_when_no_tool_calls():
 
 
 def test_parse_tool_calls_survives_malformed_arguments():
-    calls = openai.parse_tool_calls(SimpleNamespace(tool_calls=[_tc("c", "add", "{not json")]))
+    calls = openai.parse_tool_calls(
+        SimpleNamespace(tool_calls=[_tc("c", "add", "{not json")])
+    )
     assert calls[0].input == {}
 
 
@@ -56,7 +59,9 @@ def test_usage_event_maps_openai_usage_without_details():
     # Shape from a real llama.cpp probe: only prompt/completion/total.
     resp = SimpleNamespace(
         id="chatcmpl-1",
-        usage=SimpleNamespace(prompt_tokens=174, completion_tokens=64, total_tokens=238),
+        usage=SimpleNamespace(
+            prompt_tokens=174, completion_tokens=64, total_tokens=238
+        ),
     )
     ev = openai.usage_event(resp, turn=0)
     assert ev.type == "usage"
@@ -85,7 +90,9 @@ def test_usage_event_reads_details_when_present():
 
 
 def test_thinking_events_from_reasoning_content():
-    message = SimpleNamespace(reasoning_content="The user is asking me to add 12 and 30.")
+    message = SimpleNamespace(
+        reasoning_content="The user is asking me to add 12 and 30."
+    )
     evs = openai.thinking_events(message, turn=1, parent_id="p1")
     assert len(evs) == 1
     assert evs[0].thinking == "The user is asking me to add 12 and 30."
@@ -95,5 +102,11 @@ def test_thinking_events_from_reasoning_content():
 
 
 def test_thinking_events_empty_when_no_reasoning():
-    assert openai.thinking_events(SimpleNamespace(content="hi", reasoning_content=None)) == []
-    assert openai.thinking_events(SimpleNamespace(content="hi", reasoning_content="")) == []
+    assert (
+        openai.thinking_events(SimpleNamespace(content="hi", reasoning_content=None))
+        == []
+    )
+    assert (
+        openai.thinking_events(SimpleNamespace(content="hi", reasoning_content=""))
+        == []
+    )

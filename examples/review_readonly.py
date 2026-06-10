@@ -42,10 +42,19 @@ def read_only_registry() -> ToolRegistry:
 
 async def main() -> None:
     parser = argparse.ArgumentParser(description="Read-only code review of a git diff.")
-    parser.add_argument("base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)")
+    parser.add_argument(
+        "base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)"
+    )
     parser.add_argument("--model", default="claude-opus-4-8", help="Anthropic model id")
-    parser.add_argument("--max-turns", type=int, default=20, help="Max agent turns before forcing a report")
-    parser.add_argument("--log", default=None, help="Write a JSONL event transcript to this path")
+    parser.add_argument(
+        "--max-turns",
+        type=int,
+        default=20,
+        help="Max agent turns before forcing a report",
+    )
+    parser.add_argument(
+        "--log", default=None, help="Write a JSONL event transcript to this path"
+    )
     parser.add_argument(
         "--thinking",
         action="store_true",
@@ -56,7 +65,10 @@ async def main() -> None:
     repo_root = Path.cwd()
     diff = compute_diff(args.base, repo_root)
     if not diff.strip():
-        print(f"No changes between {args.base} and HEAD. Nothing to review.", file=sys.stderr)
+        print(
+            f"No changes between {args.base} and HEAD. Nothing to review.",
+            file=sys.stderr,
+        )
         return
     changed_files = compute_changed_files(args.base, repo_root)
     files_block = "\n".join(changed_files) or "(none)"

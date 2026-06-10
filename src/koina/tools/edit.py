@@ -37,7 +37,9 @@ class Edit(Tool):
         if input.old_string == "" and not path.exists():
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(input.new_string, encoding="utf-8", newline="\n")
-            return EditOutput(file_path=str(path), replace_all=input.replace_all, was_created=True)
+            return EditOutput(
+                file_path=str(path), replace_all=input.replace_all, was_created=True
+            )
 
         if input.old_string == "" and path.exists():
             raise ToolError(
@@ -67,4 +69,3 @@ class Edit(Tool):
             return f"File created: {output.file_path}"
         suffix = " (all occurrences replaced)" if output.replace_all else ""
         return f"File updated: {output.file_path}{suffix}"
-

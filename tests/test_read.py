@@ -64,6 +64,7 @@ def test_render_result():
 
 async def test_token_limit_truncates(tmp_path):
     from koina.context import ToolContext, ReadLimits
+
     f = tmp_path / "big.txt"
     f.write_text("word " * 50000)
     ctx = ToolContext(cwd=tmp_path, read_limits=ReadLimits(max_tokens=100))
@@ -73,6 +74,7 @@ async def test_token_limit_truncates(tmp_path):
 
 def test_invalid_limit_rejected():
     import pydantic
+
     with pytest.raises(pydantic.ValidationError):
         Read.Input(file_path="/x", limit=0)
 

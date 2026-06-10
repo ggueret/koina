@@ -5,7 +5,9 @@ import pytest
 from koina.context import ToolContext
 from koina.tools.glob import Glob
 
-pytestmark = pytest.mark.skipif(shutil.which("rg") is None, reason="ripgrep not installed")
+pytestmark = pytest.mark.skipif(
+    shutil.which("rg") is None, reason="ripgrep not installed"
+)
 
 
 @pytest.fixture
@@ -41,10 +43,16 @@ async def test_explicit_path(tmp_path, ctx):
 def test_render_result_lists_files():
     from koina.tools.glob import GlobOutput
 
-    assert Glob().render_result(GlobOutput(filenames=["a.py", "b.py"], truncated=False)) == "a.py\nb.py"
+    assert (
+        Glob().render_result(GlobOutput(filenames=["a.py", "b.py"], truncated=False))
+        == "a.py\nb.py"
+    )
 
 
 def test_render_result_empty():
     from koina.tools.glob import GlobOutput
 
-    assert Glob().render_result(GlobOutput(filenames=[], truncated=False)) == "No files found"
+    assert (
+        Glob().render_result(GlobOutput(filenames=[], truncated=False))
+        == "No files found"
+    )

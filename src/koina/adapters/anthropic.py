@@ -20,7 +20,9 @@ def parse_tool_calls(content: Any) -> list[ToolCall]:
     calls: list[ToolCall] = []
     for block in content:
         if getattr(block, "type", None) == "tool_use":
-            calls.append(ToolCall(id=block.id, name=block.name, input=dict(block.input)))
+            calls.append(
+                ToolCall(id=block.id, name=block.name, input=dict(block.input))
+            )
     return calls
 
 

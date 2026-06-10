@@ -50,7 +50,9 @@ async def _execute(
         return _error(call, f"InputValidationError: {exc}")
     try:
         output = await tool.run(parsed, ctx)
-        return ToolResult(id=call.id, name=call.name, content=tool.render_result(output))
+        return ToolResult(
+            id=call.id, name=call.name, content=tool.render_result(output)
+        )
     except ToolError as exc:
         return _error(call, str(exc))
     except Exception as exc:  # noqa: BLE001 - dispatch must never raise

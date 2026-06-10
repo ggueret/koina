@@ -17,7 +17,9 @@ def test_tools_param_shape():
 def test_parse_tool_calls_from_blocks():
     content = [
         SimpleNamespace(type="text", text="thinking"),
-        SimpleNamespace(type="tool_use", id="c1", name="Read", input={"file_path": "/x"}),
+        SimpleNamespace(
+            type="tool_use", id="c1", name="Read", input={"file_path": "/x"}
+        ),
     ]
     calls = anthropic.parse_tool_calls(content)
     assert len(calls) == 1

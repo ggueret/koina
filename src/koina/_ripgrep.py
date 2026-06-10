@@ -12,5 +12,7 @@ async def run_rg(args: list[str], cwd: str) -> tuple[int, str]:
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode not in (0, 1):
-        raise RuntimeError(stderr.decode("utf-8", errors="replace").strip() or "rg failed")
+        raise RuntimeError(
+            stderr.decode("utf-8", errors="replace").strip() or "rg failed"
+        )
     return proc.returncode or 0, stdout.decode("utf-8", errors="replace")

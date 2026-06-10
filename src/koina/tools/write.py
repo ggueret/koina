@@ -38,4 +38,3 @@ class Write(Tool):
     def render_result(self, output: WriteOutput) -> str:
         verb = "created successfully at:" if output.kind == "create" else "updated:"
         return f"File {verb} {output.file_path}"
-

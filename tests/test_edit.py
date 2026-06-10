@@ -77,5 +77,7 @@ async def test_empty_old_string_on_existing_raises(tmp_path, ctx):
 def test_render_result_created():
     from koina.tools.edit import EditOutput
 
-    content = Edit().render_result(EditOutput(file_path="/x", replace_all=False, was_created=True))
+    content = Edit().render_result(
+        EditOutput(file_path="/x", replace_all=False, was_created=True)
+    )
     assert "created" in content.lower()

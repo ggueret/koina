@@ -17,7 +17,13 @@ def test_registry_has_six_tools():
 async def test_dispatch_write_then_read(tmp_path, ctx):
     reg = default_registry()
     f = tmp_path / "x.txt"
-    w = await dispatch(ToolCall(id="1", name="Write", input={"file_path": str(f), "content": "hi"}), reg, ctx)
+    w = await dispatch(
+        ToolCall(id="1", name="Write", input={"file_path": str(f), "content": "hi"}),
+        reg,
+        ctx,
+    )
     assert w.is_error is False
-    r = await dispatch(ToolCall(id="2", name="Read", input={"file_path": str(f)}), reg, ctx)
+    r = await dispatch(
+        ToolCall(id="2", name="Read", input={"file_path": str(f)}), reg, ctx
+    )
     assert r.content == "1\thi"

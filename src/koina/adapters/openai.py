@@ -36,8 +36,7 @@ def parse_tool_calls(message: Any) -> list[ToolCall]:
 
 def format_results(results: list[ToolResult]) -> list[dict[str, object]]:
     return [
-        {"role": "tool", "tool_call_id": r.id, "content": r.content}
-        for r in results
+        {"role": "tool", "tool_call_id": r.id, "content": r.content} for r in results
     ]
 
 

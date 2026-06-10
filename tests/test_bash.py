@@ -43,7 +43,9 @@ def test_render_result_includes_streams():
     from koina.tools.bash import BashOutput
 
     content = Bash().render_result(
-        BashOutput(stdout="out", stderr="err", exit_code=0, timed_out=False, truncated=False)
+        BashOutput(
+            stdout="out", stderr="err", exit_code=0, timed_out=False, truncated=False
+        )
     )
     assert "out" in content
 
@@ -60,6 +62,8 @@ def test_render_result_reports_nonzero_exit():
     from koina.tools.bash import BashOutput
 
     content = Bash().render_result(
-        BashOutput(stdout="", stderr="oops", exit_code=2, timed_out=False, truncated=False)
+        BashOutput(
+            stdout="", stderr="oops", exit_code=2, timed_out=False, truncated=False
+        )
     )
     assert "Exit code: 2" in content

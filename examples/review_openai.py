@@ -33,7 +33,9 @@ async def main() -> None:
     parser = argparse.ArgumentParser(
         description="Read-only code review via an OpenAI-compatible endpoint."
     )
-    parser.add_argument("base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)")
+    parser.add_argument(
+        "base", nargs="?", default="HEAD~1", help="Base git ref (default: HEAD~1)"
+    )
     parser.add_argument(
         "--base-url",
         default="http://localhost:8080/v1",
@@ -41,13 +43,18 @@ async def main() -> None:
     )
     parser.add_argument("--model", default="local", help="Model id the server serves")
     parser.add_argument("--max-turns", type=int, default=20, help="Max agent turns")
-    parser.add_argument("--log", default=None, help="Write a JSONL event transcript to this path")
+    parser.add_argument(
+        "--log", default=None, help="Write a JSONL event transcript to this path"
+    )
     args = parser.parse_args()
 
     repo_root = Path.cwd()
     diff = compute_diff(args.base, repo_root)
     if not diff.strip():
-        print(f"No changes between {args.base} and HEAD. Nothing to review.", file=sys.stderr)
+        print(
+            f"No changes between {args.base} and HEAD. Nothing to review.",
+            file=sys.stderr,
+        )
         return
     files_block = "\n".join(compute_changed_files(args.base, repo_root)) or "(none)"
     initial = (
@@ -61,7 +68,13 @@ async def main() -> None:
     ctx = ToolContext(cwd=repo_root, events=events)
     try:
         report = await run_agent_openai(
-            client, args.model, SYSTEM_PROMPT, initial, read_only_registry(), ctx, args.max_turns
+            client,
+            args.model,
+            SYSTEM_PROMPT,
+            initial,
+            read_only_registry(),
+            ctx,
+            args.max_turns,
         )
     finally:
         if isinstance(events, JsonlSink):

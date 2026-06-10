@@ -18,8 +18,12 @@ _MARKER = "__KOINA_CWD__:"
 class BashInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     command: str = Field(description="The command to execute")
-    timeout: int | None = Field(default=None, description="Optional timeout in milliseconds")
-    description: str | None = Field(default=None, description="Advisory description, no effect")
+    timeout: int | None = Field(
+        default=None, description="Optional timeout in milliseconds"
+    )
+    description: str | None = Field(
+        default=None, description="Advisory description, no effect"
+    )
 
 
 @dataclass
@@ -33,12 +37,16 @@ class BashOutput:
 
 class Bash(Tool):
     name = "Bash"
-    description = "Execute a bash command. The working directory persists between calls."
+    description = (
+        "Execute a bash command. The working directory persists between calls."
+    )
     Input = BashInput
 
     async def run(self, input: BashInput, ctx: ToolContext) -> BashOutput:
         timeout_ms = min(input.timeout or DEFAULT_TIMEOUT_MS, MAX_TIMEOUT_MS)
-        script = f"{input.command}\n__rc=$?\nprintf '\\n{_MARKER}%s' \"$PWD\"\nexit $__rc"
+        script = (
+            f"{input.command}\n__rc=$?\nprintf '\\n{_MARKER}%s' \"$PWD\"\nexit $__rc"
+        )
         proc = await asyncio.create_subprocess_exec(
             "bash",
             "-c",
@@ -65,7 +73,7 @@ class Bash(Tool):
         stdout = stdout_b.decode("utf-8", errors="replace")
         marker_index = stdout.rfind(_MARKER)
         if marker_index != -1:
-            new_cwd = stdout[marker_index + len(_MARKER):].strip()
+            new_cwd = stdout[marker_index + len(_MARKER) :].strip()
             stdout = stdout[:marker_index].rstrip("\n")
             if new_cwd:
                 ctx.cwd = Path(new_cwd)
@@ -97,4 +105,3 @@ class Bash(Tool):
         if output.exit_code != 0:
             content += f"\nExit code: {output.exit_code}"
         return content
-
