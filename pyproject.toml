@@ -47,6 +47,7 @@ dev = [
     "mypy>=2.1.0",
     "pytest>=9.0.3",
     "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
     "ruff>=0.15.15",
 ]
 
@@ -54,6 +55,7 @@ dev = [
 asyncio_mode = "auto"
 testpaths = ["tests"]
 cache_dir = ".cache/pytest"
+addopts = "--cov --cov-report=term-missing"
 
 [tool.ruff]
 line-length = 88
@@ -64,3 +66,17 @@ cache-dir = ".cache/ruff"
 python_version = "3.12"
 strict = true
 cache_dir = ".cache/mypy"
+
+[tool.coverage.run]
+source = ["src/koina"]
+branch = true
+data_file = ".cache/coverage/.coverage"
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
+
+[tool.coverage.html]
+directory = ".cache/coverage/html"
