@@ -7,6 +7,20 @@ authors = [
     { name = "Geoffrey Guéret", email = "geoffrey@gueret.dev" }
 ]
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["agents", "agentic", "llm", "tool-use", "function-calling", "ai"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2",
 ]
@@ -16,6 +30,13 @@ examples = [
     "anthropic>=0.105.2",
     "openai>=1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/ggueret/koina"
+Repository = "https://github.com/ggueret/koina.git"
+Documentation = "https://github.com/ggueret/koina#readme"
+Issues = "https://github.com/ggueret/koina/issues"
+Changelog = "https://github.com/ggueret/koina/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["uv_build>=0.11.3,<0.12.0"]
