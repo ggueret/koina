@@ -1,0 +1,71 @@
+# Release: build once, publish to PyPI via OIDC Trusted Publishing, cut a
+# GitHub Release with git-cliff notes. Triggered by a v* tag.
+#
+# Prerequisites (one-time):
+#   - PyPI "pending publisher" for koina bound to repo ggueret/koina,
+#     workflow release.yml, environment "pypi".
+#   - GitHub Environment named "pypi".
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          enable-cache: false   # no cache in a publishing workflow (cache poisoning)
+      - run: uv build
+      - run: uvx twine check --strict dist/*
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # OIDC -> PyPI Trusted Publishing (the only elevated scope)
+    steps:
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: dist
+          path: dist/
+      # No password: uses OIDC Trusted Publishing; attestations on by default.
+      - uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
+
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # create the GitHub Release
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0   # git-cliff needs full history
+          persist-credentials: false
+      - uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
+        id: cliff
+        with:
+          args: --latest --strip header
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6
+        with:
+          name: dist
+          path: dist/
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.cliff.outputs.content }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --notes "$NOTES"
