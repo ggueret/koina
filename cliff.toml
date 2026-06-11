@@ -45,5 +45,8 @@ commit_parsers = [
 ]
 filter_commits = false
 tag_pattern = "v[0-9].*"
+# Fold pre-release tags (v...rc1, ...a1, ...b1) into the next stable release,
+# so the release notes and CHANGELOG show the full set under the final version.
+ignore_tags = "(a|b|rc)[0-9]+$"
 topo_order = false
 sort_commits = "oldest"
