@@ -85,9 +85,11 @@ class Grep(Tool[GrepInput, GrepOutput]):
         base = Path(input.path) if input.path else ctx.cwd
         if not base.is_absolute():
             base = ctx.cwd / base
-        args += ["--", input.pattern, str(base)]
+        # Run with base as cwd so ripgrep reports paths relative to it (like
+        # Glob), instead of basenames that collide across subdirectories.
+        args += ["--", input.pattern]
 
-        _, stdout = await run_rg(args, cwd=str(ctx.cwd))
+        _, stdout = await run_rg(args, cwd=str(base))
         limit = DEFAULT_HEAD_LIMIT if input.head_limit is None else input.head_limit
         offset = input.offset or 0
         lines = [line for line in stdout.splitlines() if line]
@@ -97,8 +99,7 @@ class Grep(Tool[GrepInput, GrepOutput]):
             lines = lines[:limit]
 
         if mode == "files_with_matches":
-            names = [str(Path(p).name) if Path(p).is_absolute() else p for p in lines]
-            return GrepOutput(mode=mode, filenames=names, content="\n".join(names))
+            return GrepOutput(mode=mode, filenames=lines, content="\n".join(lines))
         return GrepOutput(mode=mode, filenames=[], content="\n".join(lines))
 
     def render_result(self, output: GrepOutput) -> str:

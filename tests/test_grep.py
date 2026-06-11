@@ -86,3 +86,14 @@ async def test_option_like_pattern_is_searched_not_interpreted(tmp_path, ctx):
     (tmp_path / "a.txt").write_text("run with --help for usage\n")
     out = await Grep().run(Grep.Input(pattern="--help", output_mode="content"), ctx)
     assert "run with --help for usage" in out.content
+
+
+async def test_files_with_matches_keeps_relative_paths(tmp_path, ctx):
+    # Same basename in different directories must stay distinct, not collapse to
+    # a single "config.py" that hides which file matched.
+    (tmp_path / "src").mkdir()
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "src" / "config.py").write_text("import os\n")
+    (tmp_path / "tests" / "config.py").write_text("import os\n")
+    out = await Grep().run(Grep.Input(pattern="import os"), ctx)
+    assert sorted(out.filenames) == ["src/config.py", "tests/config.py"]
