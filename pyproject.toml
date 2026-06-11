@@ -1,6 +1,6 @@
 [project]
 name = "koina"
-version = "0.1.0rc1"
+version = "0.1.0"
 description = "An agentic toolset: provider-neutral tools and dispatch for building agents on low-level LLM SDKs"
 readme = "README.md"
 authors = [
