@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "examples"))
 
-import review_openai  # noqa: E402
+import review_openai
 
 
 def test_review_openai_registry_is_read_only():

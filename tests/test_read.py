@@ -1,6 +1,6 @@
 import pytest
 
-from koina.context import ToolContext, ReadLimits
+from koina.context import ReadLimits, ToolContext
 from koina.tools.read import Read
 
 
@@ -63,7 +63,7 @@ def test_render_result():
 
 
 async def test_token_limit_truncates(tmp_path):
-    from koina.context import ToolContext, ReadLimits
+    from koina.context import ReadLimits, ToolContext
 
     f = tmp_path / "big.txt"
     f.write_text("word " * 50000)

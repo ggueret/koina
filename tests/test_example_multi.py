@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "examples"))
 
-import review_multi  # noqa: E402
+import review_multi
 
 
 def test_default_dimensions():

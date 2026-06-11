@@ -53,14 +53,14 @@ async def _execute(
         )
     except ToolError as exc:
         return _error(call, str(exc))
-    except Exception as exc:  # noqa: BLE001 - dispatch must never raise
+    except Exception as exc:  # dispatch must never raise
         return _error(call, f"{type(exc).__name__}: {exc}")
 
 
 def _safe_emit(ctx: ToolContext, event: Event) -> None:
     try:
         ctx.events.emit(event)
-    except Exception:  # noqa: BLE001 - logging is best-effort; never break dispatch
+    except Exception:  # logging is best-effort; never break dispatch
         pass
 
 

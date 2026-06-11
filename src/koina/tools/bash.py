@@ -109,7 +109,7 @@ class Bash(Tool[BashInput, BashOutput]):
                 timeout=timeout_ms / 1000,
             )
             await proc.wait()
-        except asyncio.TimeoutError:
+        except TimeoutError:
             try:
                 os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
             except (ProcessLookupError, PermissionError):

@@ -4,8 +4,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "examples"))
 
-import _agent  # noqa: E402
-import review_readonly  # noqa: E402
+import _agent
+import review_readonly
 
 
 def test_read_only_registry_has_only_read_tools():

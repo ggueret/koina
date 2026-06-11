@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "examples"))
 
-import review_bash  # noqa: E402
+import review_bash
 
 
 def test_bash_registry_has_four_tools():

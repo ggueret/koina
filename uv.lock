@@ -342,12 +342,6 @@ dependencies = [
     { name = "pydantic" },
 ]
 
-[package.optional-dependencies]
-examples = [
-    { name = "anthropic" },
-    { name = "openai" },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
@@ -356,14 +350,13 @@ dev = [
     { name = "pytest-cov" },
     { name = "ruff" },
 ]
+examples = [
+    { name = "anthropic" },
+    { name = "openai" },
+]
 
 [package.metadata]
-requires-dist = [
-    { name = "anthropic", marker = "extra == 'examples'", specifier = ">=0.105.2" },
-    { name = "openai", marker = "extra == 'examples'", specifier = ">=1.0" },
-    { name = "pydantic", specifier = ">=2" },
-]
-provides-extras = ["examples"]
+requires-dist = [{ name = "pydantic", specifier = ">=2" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -372,6 +365,10 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
     { name = "ruff", specifier = ">=0.15.15" },
+]
+examples = [
+    { name = "anthropic", specifier = ">=0.105.2" },
+    { name = "openai", specifier = ">=1.0" },
 ]
 
 [[package]]

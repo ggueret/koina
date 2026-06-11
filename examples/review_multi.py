@@ -128,7 +128,7 @@ async def main() -> None:
             for name in names
         )
     )
-    reports = dict(zip(names, results))
+    reports = dict(zip(names, results, strict=True))
     print("Synthesizing...", file=sys.stderr)
     final = await synthesize(client, args.model, reports)
     print(final)
