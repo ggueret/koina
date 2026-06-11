@@ -74,6 +74,7 @@ llama.cpp). See `examples/` for runnable read-only code-review scripts on both.
   a provider SDK at runtime.
 - **Structured logging**: typed events (tool calls, model calls, token usage,
   reasoning) emitted to a pluggable `EventSink` (`JsonlSink`/`NullSink`), so a run
-  reconstructs from a JSONL transcript. Off by default, zero cost when inactive.
+  reconstructs from a JSONL transcript. Off by default, near-zero overhead when
+  inactive.
 
 Permissions, web tools, and concurrency orchestration are out of scope.
