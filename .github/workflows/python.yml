@@ -41,10 +41,16 @@ jobs:
       matrix:
         python: ["3.12", "3.13", "3.14"]
         os: [ubuntu-latest]
+        include:
+          - os: macos-latest
+            python: "3.13"
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
+      - name: Install ripgrep (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ripgrep
       - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
         with:
           enable-cache: true
@@ -55,3 +61,17 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: .cache/coverage/coverage.xml
+
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          enable-cache: true
+      - run: uv build
+      - run: uvx twine check --strict dist/*
+      - run: uv run --isolated --no-project --with dist/*.whl
+          python -c "import koina; from koina import default_registry, dispatch, ToolContext"
