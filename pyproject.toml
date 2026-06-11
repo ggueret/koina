@@ -30,7 +30,7 @@ Homepage = "https://github.com/ggueret/koina"
 Repository = "https://github.com/ggueret/koina.git"
 Documentation = "https://github.com/ggueret/koina#readme"
 Issues = "https://github.com/ggueret/koina/issues"
-Changelog = "https://github.com/ggueret/koina/blob/main/CHANGELOG.md"
+Changelog = "https://github.com/ggueret/koina/releases"
 
 [build-system]
 requires = ["uv_build>=0.11.3,<0.12.0"]
