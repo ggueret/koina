@@ -67,3 +67,24 @@ def test_render_result_reports_nonzero_exit():
         )
     )
     assert "Exit code: 2" in content
+
+
+async def test_stderr_kept_when_stdout_caps(tmp_path, ctx):
+    out = await Bash().run(
+        Bash.Input(command="yes x | head -n 100000; echo NEEDLE >&2"), ctx
+    )
+    assert out.truncated is True
+    assert "NEEDLE" in out.stderr
+
+
+async def test_cwd_marker_not_leaked(tmp_path, ctx):
+    out = await Bash().run(Bash.Input(command="echo visible"), ctx)
+    assert out.stdout.strip() == "visible"
+    assert "__KOINA_CWD__" not in out.stdout
+
+
+async def test_cwd_persists_when_output_truncated(tmp_path, ctx):
+    (tmp_path / "sub").mkdir()
+    out = await Bash().run(Bash.Input(command="cd sub; yes x | head -n 100000"), ctx)
+    assert out.truncated is True
+    assert ctx.cwd == tmp_path / "sub"
