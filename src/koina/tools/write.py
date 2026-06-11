@@ -20,7 +20,7 @@ class WriteOutput:
     file_path: str
 
 
-class Write(Tool):
+class Write(Tool[WriteInput, WriteOutput]):
     name = "Write"
     description = "Write a file to the local filesystem, overwriting if it exists."
     Input = WriteInput

@@ -1,3 +1,11 @@
+"""OpenAI Chat Completions adapter (and OpenAI-compatible servers).
+
+Maps koina's neutral tool types to and from OpenAI wire shapes: `tools_param`
+(schema export as function tools), `parse_tool_calls` (tool_calls -> `ToolCall`,
+tolerant of malformed JSON arguments), `format_results` (`ToolResult` -> tool
+message), plus `usage_event` / `thinking_events`.
+"""
+
 import json
 from typing import Any
 

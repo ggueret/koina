@@ -74,7 +74,7 @@ class BashOutput:
     truncated: bool
 
 
-class Bash(Tool):
+class Bash(Tool[BashInput, BashOutput]):
     name = "Bash"
     description = (
         "Execute a bash command. The working directory persists between calls."

@@ -8,12 +8,10 @@ class _EchoInput(BaseModel):
     text: str
 
 
-class _Echo(Tool):
+class _Echo(Tool[_EchoInput, str]):
     name = "Echo"
     description = "Echoes text."
     Input = _EchoInput
-    is_read_only = True
-    is_concurrency_safe = True
 
     async def run(self, input, ctx):
         return input.text

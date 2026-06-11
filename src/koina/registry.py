@@ -1,4 +1,5 @@
 import time
+from typing import Any
 
 from pydantic import ValidationError
 
@@ -9,33 +10,30 @@ from .tool import Tool, ToolError
 
 
 class ToolRegistry:
-    def __init__(self, tools: tuple[Tool, ...] | list[Tool] = ()) -> None:
-        self._by_name: dict[str, Tool] = {}
+    def __init__(
+        self, tools: tuple[Tool[Any, Any], ...] | list[Tool[Any, Any]] = ()
+    ) -> None:
+        self._by_name: dict[str, Tool[Any, Any]] = {}
         for tool in tools:
             self.register(tool)
 
-    def register(self, tool: Tool) -> None:
+    def register(self, tool: Tool[Any, Any]) -> None:
         self._by_name[tool.name] = tool
         for alias in tool.aliases:
             self._by_name[alias] = tool
 
-    def get(self, name: str) -> Tool | None:
+    def get(self, name: str) -> Tool[Any, Any] | None:
         return self._by_name.get(name)
 
-    def tools(self) -> list[Tool]:
-        unique: dict[str, Tool] = {}
+    def tools(self) -> list[Tool[Any, Any]]:
+        unique: dict[str, Tool[Any, Any]] = {}
         for tool in self._by_name.values():
             unique[tool.name] = tool
         return list(unique.values())
 
 
 def _error(call: ToolCall, message: str) -> ToolResult:
-    return ToolResult(
-        id=call.id,
-        name=call.name,
-        content=f"<tool_use_error>{message}</tool_use_error>",
-        is_error=True,
-    )
+    return ToolResult(id=call.id, name=call.name, content=message, is_error=True)
 
 
 async def _execute(
@@ -69,6 +67,13 @@ def _safe_emit(ctx: ToolContext, event: Event) -> None:
 async def dispatch(
     call: ToolCall, registry: ToolRegistry, ctx: ToolContext
 ) -> ToolResult:
+    """Run a tool call and return its result.
+
+    Never raises: an unknown tool, an input that fails validation, a `ToolError`,
+    or any unexpected exception from the tool is converted into a
+    `ToolResult(is_error=True)`. A `ToolStart`/`ToolEnd` pair is emitted to
+    `ctx.events` around execution.
+    """
     start = ToolStart(tool=call.name, tool_call_id=call.id, input=call.input)
     _safe_emit(ctx, start)
     t0 = time.monotonic()

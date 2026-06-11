@@ -22,14 +22,12 @@ class ReadOutput:
     truncated: bool
 
 
-class Read(Tool):
+class Read(Tool[ReadInput, ReadOutput]):
     name = "Read"
     description = (
         "Read a text file from the local filesystem. Lines are returned numbered."
     )
     Input = ReadInput
-    is_read_only = True
-    is_concurrency_safe = True
 
     async def run(self, input: ReadInput, ctx: ToolContext) -> ReadOutput:
         path = Path(input.file_path)

@@ -22,12 +22,10 @@ class GlobOutput:
     truncated: bool
 
 
-class Glob(Tool):
+class Glob(Tool[GlobInput, GlobOutput]):
     name = "Glob"
     description = "Find files matching a glob pattern, sorted by modification time."
     Input = GlobInput
-    is_read_only = True
-    is_concurrency_safe = True
 
     async def run(self, input: GlobInput, ctx: ToolContext) -> GlobOutput:
         base = Path(input.path) if input.path else ctx.cwd

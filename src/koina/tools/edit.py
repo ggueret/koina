@@ -22,7 +22,7 @@ class EditOutput:
     was_created: bool = False
 
 
-class Edit(Tool):
+class Edit(Tool[EditInput, EditOutput]):
     name = "Edit"
     description = "Perform an exact string replacement in a file."
     Input = EditInput

@@ -1,3 +1,11 @@
+"""Anthropic Messages API adapter.
+
+Maps koina's neutral tool types to and from Anthropic wire shapes: `tools_param`
+(schema export), `parse_tool_calls` (tool_use blocks -> `ToolCall`),
+`format_results` (`ToolResult` -> tool_result block, wrapping errors in
+`<tool_use_error>`), plus `usage_event` / `thinking_events`.
+"""
+
 from typing import Any
 
 from ..calls import ToolCall, ToolResult
@@ -29,10 +37,15 @@ def parse_tool_calls(content: Any) -> list[ToolCall]:
 def format_results(results: list[ToolResult]) -> dict[str, object]:
     blocks: list[dict[str, object]] = []
     for r in results:
+        # Claude Code wraps tool errors in this marker; it is Anthropic-specific,
+        # so it is applied here, not baked into the neutral ToolResult.content.
+        content = (
+            f"<tool_use_error>{r.content}</tool_use_error>" if r.is_error else r.content
+        )
         block: dict[str, object] = {
             "type": "tool_result",
             "tool_use_id": r.id,
-            "content": r.content,
+            "content": content,
         }
         if r.is_error:
             block["is_error"] = True

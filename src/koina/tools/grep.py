@@ -46,12 +46,10 @@ class GrepOutput:
     content: str
 
 
-class Grep(Tool):
+class Grep(Tool[GrepInput, GrepOutput]):
     name = "Grep"
     description = "Search file contents with ripgrep."
     Input = GrepInput
-    is_read_only = True
-    is_concurrency_safe = True
 
     async def run(self, input: GrepInput, ctx: ToolContext) -> GrepOutput:
         mode = input.output_mode or "files_with_matches"
