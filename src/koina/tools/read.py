@@ -37,13 +37,15 @@ class Read(Tool):
             path = ctx.cwd / path
         if not path.exists():
             raise ToolError(f"File does not exist: {input.file_path}")
+        if not path.is_file():
+            raise ToolError(f"Not a regular file: {input.file_path}")
 
-        data = path.read_bytes()
-        truncated = False
         byte_budget = min(ctx.read_limits.max_bytes, ctx.read_limits.max_tokens * 4)
-        if len(data) > byte_budget:
+        with path.open("rb") as fh:
+            data = fh.read(byte_budget + 1)
+        truncated = len(data) > byte_budget
+        if truncated:
             data = data[:byte_budget]
-            truncated = True
 
         text = data.decode("utf-8", errors="replace")
         lines = text.split("\n")

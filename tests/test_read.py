@@ -84,3 +84,46 @@ async def test_empty_file_notes(tmp_path, ctx):
     f.write_text("")
     out = await Read().run(Read.Input(file_path=str(f)), ctx)
     assert "empty" in out.content.lower()
+
+
+async def test_rejects_non_regular_file(tmp_path, ctx):
+    import asyncio
+    import os
+    import sys
+
+    from koina.tool import ToolError
+
+    if sys.platform == "win32":
+        pytest.skip("no mkfifo on Windows")
+    fifo = tmp_path / "pipe"
+    os.mkfifo(fifo)
+    # Without the regular-file guard, read_bytes() blocks forever on a
+    # writer-less FIFO; the guard must raise instead of hanging the loop.
+    with pytest.raises(ToolError):
+        await asyncio.wait_for(
+            Read().run(Read.Input(file_path=str(fifo)), ctx), timeout=2.0
+        )
+
+
+async def test_does_not_read_whole_file(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    f = tmp_path / "big.txt"
+    f.write_text("x\n" * 1000)
+    ctx = ToolContext(cwd=tmp_path, read_limits=ReadLimits(max_bytes=10))
+
+    def boom(self):
+        raise AssertionError("read_bytes materializes the whole file")
+
+    monkeypatch.setattr(Path, "read_bytes", boom)
+    out = await Read().run(Read.Input(file_path=str(f)), ctx)
+    assert out.truncated is True
+
+
+def test_truncation_marker_rendered():
+    from koina.tools.read import ReadOutput
+
+    rendered = Read().render_result(
+        ReadOutput(content="1\tx", start_line=1, num_lines=1, truncated=True)
+    )
+    assert "truncated" in rendered
